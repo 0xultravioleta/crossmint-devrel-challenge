@@ -215,3 +215,35 @@ All 5 specialist plans delivered (2,805 lines total) at `_internal/planning/plan
 All 5 conform to the 6 PM tightenings: framing discipline, "What this plan is NOT" section, dependencies, open questions, real commands/paths/budgets, no secrets.
 
 **Execution is cleared to begin.** Next session starts at Phase 2B (scaffold review, H+7 → H+8).
+
+---
+
+## 2026-04-09 H+7: Phase 2B scaffold complete
+
+Scaffold review executed per `03-mcp-build-and-skill-plan.md` Phase 1, tasks 1.1 through 1.10. All 10 tasks landed within the 60-minute budget.
+
+**Delivered:**
+
+- `z:\crossmint-wallets-mcp\` — scaffold committed (root commit, author `0xultravioleta`, no Claude co-author)
+  - `package.json` updated to locked deps: `@modelcontextprotocol/sdk@^1.29.0`, `@crossmint/wallets-sdk@^1.0.7`, `@solana/web3.js@^1.95.0`, `@solana/spl-token@^0.4.9`, `zod@^3.25.0`
+  - `src/core/{client,types,create-wallet,get-balance,transfer-token,pay-x402-endpoint}.ts` — stubs (all 4 tool functions throw NotImplemented)
+  - `src/mcp/{server,tools,errors}.ts` — `McpServer` + `StdioServerTransport` entry point wired, `registerTools` stub, standardized error shape
+  - `.env.example` documents both direct and file-ref secret patterns, defaults `DEFAULT_CHAIN=solana-devnet`
+  - `demo/smoke-test.ts` — config loader exercise, logs to stderr
+  - Gates green: `pnpm install`, `pnpm tsc --noEmit`, `pnpm build` (produces `dist/mcp/server.js`), `pnpm demo` (scaffold mode)
+- `z:\crossmint-cpi-skill\` — repo initialized (root commit, author `0xultravioleta`)
+  - MIT LICENSE, `package.json`, `README.md` (framing the knowledge gap), `SKILL.md` (frontmatter + section stubs for Phase 2G)
+  - `.gitignore`
+
+**Deviations from plan worth flagging for Phase 2C:**
+
+1. **Mainnet instead of devnet** — operator instruction at scaffold time. Local `.env` sets `DEFAULT_CHAIN=solana` and `SOLANA_RPC_URL=https://api.mainnet-beta.solana.com`. Implications for Phase 2C:
+   - x402 smoke test will spend real USDC on mainnet, not devnet faucet USDC
+   - Crossmint API key scopes must be enabled for mainnet (verify before first `createWallet` call)
+   - Recovery secret protects real funds — loss = loss of access to wallet
+   - `.env.example` (public) still defaults to `solana-devnet` so external users don't accidentally spend real funds on first try
+2. **Secret file-ref pattern** — added `CROSSMINT_API_KEY_FILE` and `CROSSMINT_RECOVERY_SECRET_FILE` alongside the direct env vars. `client.ts` reads direct value first, falls back to file. Keeps secrets entirely outside the project tree (operator stores them at `z:/consultoria-x/.unused/` on this machine). Docker secrets / K8s secrets just work as a side benefit.
+3. **`dotenv` + `rimraf` added as devDeps** — not in the plan's dep list but needed for `demo/smoke-test.ts` env loading and cross-platform `clean` script on Windows.
+4. **Recovery secret generated locally** — 32 bytes of entropy from `crypto.randomBytes`, hex-encoded (64 chars), written to `z:/consultoria-x/.unused/crossmint-recovery-secret-0xultravioleta.txt` with no terminal echo. Never printed, never logged.
+
+**Phase 2B gate: PASSED at H+7.** Phase 2C critical path (Tool 4 `pay_x402_endpoint`) is cleared to begin per `02-critical-path-plan.md`.
