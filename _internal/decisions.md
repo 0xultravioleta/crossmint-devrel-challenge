@@ -96,6 +96,30 @@ The opinion sentence follows the rubric the brief gives literally: *"this concep
 
 ---
 
+## 2026-04-09 H+5: Concept v2 — DUAL ARTIFACT
+
+Fede confirmed on Telegram that lobster.cash is Crossmint's play but "not what you're saying" — the MCP server angle is non-duplicative. Deep dive revealed lobster.cash is CLI + skills architecture, has 13 certified skills, and Fede is the certification gate.
+
+User decision: "hagamoslo los dos" — ship both the MCP server AND a lobster.cash skill.
+
+**Concept lock v2:**
+
+> "The two things lobster.cash doesn't ship: a Crossmint Wallets MCP Server for MCP-native clients (Claude Desktop, Continue.dev, Cline, Codex), and a certified lobster.cash skill that fills the Solana CPI scanning gap only Saul can explain."
+
+**Two artifacts, shared narrative, shared blog post, shared campaign proposal.**
+
+**Artifact 1:** `crossmint-wallets-mcp` — MCP server with 4 tools (create_wallet, get_balance, transfer_token, pay_x402_endpoint). Ships via npm. Installable in any MCP-native client via JSON config. Built first.
+
+**Artifact 2:** `crossmint-cpi-skill` — lobster.cash-compatible skill focused on the Solana CPI inner instruction nuance. Thin adapter, calls @crossmint/lobster-cli under the hood. Built second. Fede is the cert gate.
+
+**Critical path:** pay_x402_endpoint tool in the MCP server. Must work by H+11 or we pivot. 4 fallback plans documented in concept-lock-v2.md.
+
+**Full plan:** see `_internal/phase-notes/concept-lock-v2.md`
+
+**Kills:** concept-lock.md v1 (Hello x402). Ship target remains H+36, hard cutoff H+40.
+
+---
+
 ## 2026-04-09 H+2.5: Timeline revision
 
 | Gate | Old time | New time | Change reason |
