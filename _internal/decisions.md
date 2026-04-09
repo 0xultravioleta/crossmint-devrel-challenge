@@ -166,3 +166,52 @@ Based on FINDINGS.md, the provisional winning concept is:
 - **Facilitator choice** — Phase 2, owner Demo Engineer (Ultravioleta facilitator vs Faremeter vs Corbits)
 - **Content format** — Phase 3, owner Technical Writer (blog post primary, Twitter thread secondary)
 - **Campaign channels** — Phase 4, owner DevRel Campaign Strategist
+
+---
+
+## 2026-04-09 H+6: Tool 4 plan verdict (Research close-out)
+
+**Verdict: Plan A (direct SDK signing via `@crossmint/wallets-sdk`)**
+
+**Why:** R1 research confirmed that `@crossmint/wallets-sdk@1.0.7` exposes all the primitives needed for `crossmint_pay_x402_endpoint` on both Solana and EVM:
+
+- **Solana path:** `SolanaWallet.from(wallet).sendTransaction({ serializedTransaction })` accepts any base64-encoded Solana transaction. Build a TransferChecked instruction client-side, serialize, submit. Crossmint's smart wallet signs via CPI internally.
+- **EVM path:** `EVMWallet.from(wallet).getViemClient()` returns a raw viem WalletClient for EIP-712 typed data signing (needed for EIP-3009 x402 payments).
+
+**Plans B, C, D remain documented as mitigations in `_internal/planning/plans/02-critical-path-plan.md`** with hour-resolution pivot triggers, but are NOT expected to fire.
+
+**Dropped from MCP server scope (confirmed by R1):**
+
+- `crossmint_add_delegated_signer` tool — the SDK's signer model is recovery-only, not first-class delegation with spending caps. Can ship in v0.2 if Crossmint adds the API.
+- `crossmint_list_transactions` tool — nice-to-have, dropped to stay under the 4-tool cap.
+
+**Final tool list for v0.1:**
+
+1. `crossmint_create_wallet`
+2. `crossmint_get_balance`
+3. `crossmint_transfer_token`
+4. `crossmint_pay_x402_endpoint` ← critical path
+
+**R2 verdict recorded:** `@crossmint/lobster-cli@3.0.8` has importable library exports (`parseConfig`, `getOrCreateWallet`, `createTransaction`, `approveTransaction`, etc.), BUT the MCP server will NOT wrap it. Reasons: state isolation (`~/.lobster/agents.json` would conflict across installs), clean MCP stdio transport (lobster-cli's human-readable stdout breaks JSON-RPC). Clean separation between the two Crossmint products.
+
+**R3 verdict recorded:** `@modelcontextprotocol/sdk@1.29.0` pinned. Use `McpServer` + `StdioServerTransport`. Required peer: `zod@^3.25.0`. Log to stderr only — stdout is reserved for JSON-RPC.
+
+**R4 deferred** to Phase 2C Task 1.2 (x402 payload format inspection during critical path build, not a Phase 2A blocker).
+
+**Phase 2A gate: PASSED at H+6.**
+
+---
+
+## 2026-04-09 H+6: Planning phase complete
+
+All 5 specialist plans delivered (2,805 lines total) at `_internal/planning/plans/`:
+
+1. `01-research-plan.md` (266 lines)
+2. `02-critical-path-plan.md` (487 lines)
+3. `03-mcp-build-and-skill-plan.md` (981 lines, under 1200 cap)
+4. `04-content-and-campaign-plan.md` (451 lines)
+5. `05-integration-qa-and-risk-plan.md` (620 lines)
+
+All 5 conform to the 6 PM tightenings: framing discipline, "What this plan is NOT" section, dependencies, open questions, real commands/paths/budgets, no secrets.
+
+**Execution is cleared to begin.** Next session starts at Phase 2B (scaffold review, H+7 → H+8).
