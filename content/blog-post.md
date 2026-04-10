@@ -98,7 +98,7 @@ The MCP server and the skill are the developer-facing pieces. The facilitator fi
 
 Both artifacts are MIT-licensed on my personal GitHub, and both are drafted to be republished at `@crossmint/wallets-mcp` and as a `crossmint/skills` entry the moment the team wants them. The MCP server is ready for the [modelcontextprotocol.io/registry](https://modelcontextprotocol.io/registry) submission. The skill is ready for Fede's certification review into [lobster.cash/skills](https://lobster.cash/skills).
 
-The CPI scanning logic is implemented in Rust and has been running in production for over a month. The Faremeter SDK focuses on top-level instruction scanning today. Extending it to also scan CPI inner instructions would close the gap for every Faremeter-based facilitator — and that is a contribution I intend to make upstream.
+The CPI scanning logic is implemented in Rust and has been running in production for over a month. While testing the MCP server with Crossmint smart wallets, I noticed the Faremeter SDK's charge scheme only validates top-level instructions — CPI transfers from smart wallets would not match. I extended the verification to also scan inner instructions and opened a [PR upstream](https://github.com/faremeter/faremeter/pull/151).
 
 If there is a path forward, the next conversation is about shipping it as `@crossmint/*` and updating the Solana Foundation's "Crossmint is currently in progress" note on their x402 guide to "shipped."
 
