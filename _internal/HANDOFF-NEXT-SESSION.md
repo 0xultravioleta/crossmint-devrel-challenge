@@ -1,7 +1,7 @@
 # HANDOFF — Next Session Pickup Point
 
-> **Context:** This conversation is ~90% full and needs to close out. The next Claude Code session will pick up execution from here.
-> **Current time:** 2026-04-09 ~H+6.5 (~12:45 PM EDT)
+> **Context:** Session 2 closing out. Phases 2B through 3 are COMPLETE. Remaining: npm publish, Phase 5 integration, Phase 6 public push.
+> **Current time:** 2026-04-10 ~H+30 (~08:10 AM EDT)
 > **Ship target:** 2026-04-10 ~18:30 EDT (H+36)
 > **Hard cutoff:** 2026-04-10 ~22:30 EDT (H+40)
 > **Absolute 48h spec deadline:** 2026-04-11 06:17 EDT
@@ -10,11 +10,9 @@
 
 ## TL;DR — Where we are
 
-Phase 0 (coordination) + Phase 1 (concept lock) + Phase 2A (research) + Planning Phase (5 specialist plans) are **COMPLETE**.
+**Phases 2B through 3 are COMPLETE. The MCP server builds, runs, passes JSON-RPC handshake, and has a verified mainnet tx. All content (blog, thread, video script, campaign) is drafted and PM-approved with fixes applied.**
 
-**Next task:** Phase 2B (scaffold review) at H+7 → H+8, followed by Phase 2C (critical path Tool 4 build) at H+8 → H+12.
-
-**The concept is locked. The plans are written. The research is done. Execution is the next move.**
+**What remains:** npm publish (blocked on `npm login`), Phase 5 integration (move content drafts to final locations, write submission README), Phase 6 public push (GitHub public repos, email to Adolfo).
 
 ---
 
@@ -22,42 +20,13 @@ Phase 0 (coordination) + Phase 1 (concept lock) + Phase 2A (research) + Planning
 
 Read these in order:
 
-1. **`_internal/phase-notes/concept-lock-v2.md`** — what we're building
-2. **`_internal/phase-notes/BUILD-PLAN.md`** — the master phased plan
-3. **`_internal/planning/plans/02-critical-path-plan.md`** — Tool 4 build plan (most important for Phase 2C)
-4. **`_internal/planning/plans/03-mcp-build-and-skill-plan.md`** — the main build track (Phase 2B through 2G)
-5. **`_internal/research/crossmint-sdk-api.md`** — the SDK surface map (R1 verdict: Plan A confirmed)
-6. **`_internal/decisions.md`** — running decision log
-7. **`HANDOFF-NEXT-SESSION.md`** — this file (the summary)
+1. **`_internal/decisions.md`** — the running decision log, especially entries at H+7, H+8, H+8.5, H+9, H+10 which document everything that happened in Session 2
+2. **This file** — the summary
+3. **`z:\crossmint-wallets-mcp\README.md`** — the public README already written
+4. **`z:\crossmint-cpi-skill\SKILL.md`** — the educational content already written
+5. **`_internal/content-drafts/`** — the 6 content files ready for voice pass
 
-**Don't read the brainstorm files unless the concept comes into question** — they're archived reasoning, not active plans.
-
----
-
-## The concept in one paragraph
-
-Build TWO artifacts that fill TWO gaps in Crossmint's agentic commerce stack:
-
-1. **`crossmint-wallets-mcp`** — an MCP server exposing 4 Crossmint smart wallet tools (`create_wallet`, `get_balance`, `transfer_token`, `pay_x402_endpoint`) to any MCP-native client (Claude Desktop, Continue.dev, Cline, Codex CLI). Complements lobster.cash, which ships to Claude Code/Cursor/OpenClaw via the skill architecture but doesn't reach MCP-native clients.
-
-2. **`crossmint-cpi-skill`** — a lobster.cash-compatible skill that teaches AI agents the Solana CPI inner instruction nuance when paying x402 endpoints from Crossmint smart wallets. None of the 13 certified lobster.cash skills cover this technical insight.
-
-Both MIT licensed. Both ready for Crossmint to fork into the official org. Ship includes blog post + Twitter thread + video script + 1-page campaign proposal.
-
----
-
-## Critical facts locked at research time
-
-- **`@crossmint/wallets-sdk@1.0.7`** (published 2026-04-06, 3 days before research)
-  - `SolanaWallet.sendTransaction({ serializedTransaction: base64 })` is the primitive for Tool 4 on Solana — confirmed
-  - `EVMWallet.getViemClient()` escape hatch for EIP-712 typed data signing on EVM — confirmed
-- **`@crossmint/lobster-cli@3.0.8`** (published 2026-04-09, 1 hour before research — fresh)
-  - Has library exports but we will NOT wrap it (state isolation + MCP transport incompatibility)
-- **`@modelcontextprotocol/sdk@1.29.0`** (published 2026-03-30, 10 days before research)
-  - Use `McpServer` + `StdioServerTransport`
-  - Peer dep: `zod@^3.25.0`
-  - **Log to stderr only** — stdout is reserved for JSON-RPC transport
-- **Saul's AutoJob MCP server** at `z:\ultravioleta\dao\autojob\` is the known-good stdio transport reference — read during Phase 2B before writing `src/mcp/server.ts`
+**Don't re-read the planning files** (`_internal/planning/plans/*.md`) unless something needs revisiting — they are reference, and the decisions.md log supersedes them on any deviation.
 
 ---
 
@@ -65,158 +34,197 @@ Both MIT licensed. Both ready for Crossmint to fork into the official org. Ship 
 
 ### `z:\crossmint-devrel-challenge\` (coordination workspace, private)
 
-- Git initialized, 17 commits
-- All planning, research, brainstorm, decision log
-- Will become the submission entry point after Phase 5 README rewrite
+- **Git:** 22 commits on `main`, author `0xultravioleta`, zero Claude co-author lines
+- **Key files added in Session 2:**
+  - `_internal/content-drafts/00-shared-brief.md` (HR's brief for all specialists)
+  - `_internal/content-drafts/01-narrative-lock.md` (title + hook + rationale)
+  - `_internal/content-drafts/02-blog-post.md` (1310 words, PM-approved)
+  - `_internal/content-drafts/03-twitter-thread.md` (10 tweets, PM-approved after tool-name fix)
+  - `_internal/content-drafts/04-video-script.md` (75s terminal demo, PM-approved)
+  - `_internal/content-drafts/05-campaign-proposal.md` (496 words, PM-approved after "Proof it works" fix)
+  - `_internal/decisions.md` updated through H+10
 
-### `z:\crossmint-wallets-mcp\` (Artifact 1, will be public at H+34)
+### `z:\crossmint-wallets-mcp\` (Artifact 1, will be public)
 
-**Current state:** Partial scaffold exists from earlier in the conversation BEFORE the concept pivot. Review and update during Phase 2B:
+- **Git:** 6 commits on `main`, author `0xultravioleta`, zero Claude co-author lines
+- **State:** FULLY FUNCTIONAL MCP server
+  - `pnpm tsc --noEmit` passes
+  - `pnpm build` produces `dist/mcp/server.js`
+  - `pnpm demo` runs end-to-end on Solana mainnet (creates wallet, checks balance, pays x402 paywall, verifies on-chain)
+  - JSON-RPC stdio handshake verified: `initialize` + `tools/list` (returns 4 tools) + `tools/call` (returns real on-chain balance)
+  - `pnpm publish --dry-run` verified: 22.9kB tarball, 43 files, name `crossmint-wallets-mcp` available on npm (404 at registry)
+  - README.md written with Claude Desktop / Continue.dev / Cline / Codex CLI config blocks
+  - `.env` exists (gitignored) with file-ref secrets pointing to `z:/consultoria-x/.unused/`
+  - `.env.example` exists (public, no secrets)
+- **NOT yet done:** `npm publish` (blocked on npm login)
+- **Key files:**
+  - `src/core/client.ts` — config loader with file-ref secret pattern
+  - `src/core/create-wallet.ts` — real implementation
+  - `src/core/get-balance.ts` — real implementation
+  - `src/core/transfer-token.ts` — real implementation
+  - `src/core/pay-x402-endpoint.ts` — real implementation (the critical path tool)
+  - `src/mcp/server.ts` — McpServer + StdioServerTransport
+  - `src/mcp/tools.ts` — 4 tools registered via `registerTool`
+  - `src/mcp/errors.ts` — standardized error shapes
+  - `demo/smoke-test.ts` — full E2E test
+  - `demo/paywall-server.ts` — local x402 paywall for testing
+  - `demo/create-merchant-wallet.ts` — one-off merchant wallet creation
+  - `demo/wallet-cache.json` — cached wallet addresses (gitignored)
 
-- `package.json` — EXISTS, needs dep list refresh per concept-lock-v2.md
-- `tsconfig.json` — EXISTS, fine
-- `.gitignore` — EXISTS, fine
-- `LICENSE` — EXISTS, MIT, fine
-- `src/` — EMPTY, needs scaffold in Phase 2B
-- `demo/` — EMPTY, needs smoke test skeleton
-- `.env.example` — MISSING, create in Phase 2B
-- `README.md` — MISSING, create in Phase 2B
-- Git initialized but no commits yet
+### `z:\crossmint-cpi-skill\` (Artifact 2, will be public)
 
-### `z:\crossmint-cpi-skill\` (Artifact 2, will be public at H+34)
+- **Git:** 2 commits on `main`, author `0xultravioleta`, zero Claude co-author lines
+- **State:** COMPLETE educational content
+  - `SKILL.md` — full CPI teaching content (242 lines): plain-english analogy, wrong-way code, right-way recipe, x402 payment loop recipe, facilitator verification guidance, decision tree, common errors table
+  - `README.md` — framing the knowledge gap
+  - `package.json`, `LICENSE` (MIT), `.gitignore`
 
-- Does not exist yet
-- Create in Phase 2B Task 1.10 per `03-mcp-build-and-skill-plan.md`
+### Secrets location
 
----
+- API key: `z:/consultoria-x/.unused/crossmint-api-key-0xultravioleta.txt` (230 bytes)
+- Recovery secret: `z:/consultoria-x/.unused/crossmint-recovery-secret-0xultravioleta.txt` (64 bytes, hex-encoded 32 bytes entropy)
+- **NEVER** print, cat, or display these files — user is always streaming
 
-## Immediate next actions (Phase 2B scaffold — H+7 → H+8, 60 min)
+### Wallet addresses (Solana mainnet)
 
-**Follow `_internal/planning/plans/03-mcp-build-and-skill-plan.md` Phase 1 (tasks 1.1 through 1.10) exactly.**
-
-Summary of what to do:
-
-1. **Verify existing scaffold** — `ls -la z:/crossmint-wallets-mcp/ && cat z:/crossmint-wallets-mcp/package.json` (5 min)
-2. **Update `package.json`** to include:
-   - `@modelcontextprotocol/sdk@^1.29.0`
-   - `@crossmint/wallets-sdk@^1.0.7`
-   - `@solana/web3.js@^1.95.0`
-   - `@solana/spl-token@^0.4.9`
-   - `zod@^3.25.0`
-   - dev deps: `@types/node`, `tsx`, `typescript`
-   - `"bin": { "crossmint-wallets-mcp": "dist/mcp/server.js" }`
-   - `"type": "module"` (ESM)
-3. **`pnpm install`** (5 min)
-4. **Scaffold `src/core/`** — empty function stubs for `createWallet`, `getBalance`, `transferToken`, `payX402Endpoint`, plus `client.ts` and `types.ts` (15 min)
-5. **Scaffold `src/mcp/`** — minimal `server.ts` + `tools.ts` + `errors.ts` stubs (10 min)
-6. **Create `.env.example`** with the 4 required env vars (5 min)
-7. **Create `demo/smoke-test.ts` skeleton** (5 min)
-8. **`pnpm tsc --noEmit`** must pass (5 min)
-9. **Initialize `z:\crossmint-cpi-skill\`** with README + SKILL.md + package.json + LICENSE skeletons (10 min)
-10. **Commit Phase 2B completion** in both repos
-
-**Phase 2B gate:** `pnpm tsc --noEmit` passes on `crossmint-wallets-mcp`, skill repo initialized. Proceed to Phase 2C.
-
----
-
-## Phase 2C — Critical path (H+8 → H+12)
-
-**Follow `_internal/planning/plans/02-critical-path-plan.md` exactly.**
-
-Key hour-resolution pivot triggers:
-
-- **H+9:30** — if `src/core/pay-x402-endpoint.ts` transaction construction isn't complete, pivot decision
-- **H+10:30** — if smoke test isn't green on Plan A, pivot to Plan B (wrap `@crossmint/lobster-cli`)
-- **H+11:30** — if Plan B isn't green, pivot to Plan C (Crossmint REST API direct)
-- **H+11:45** — if Plan C isn't green, pivot to Plan D (degraded transfer fallback)
-- **H+12** — hard deadline: SOMETHING ships as Tool 4
-
-**Plan A is expected to succeed** per R1 verdict. The other plans are mitigations, not expectations.
-
-**Build Tool 4 FIRST, before Tools 1-3**, to de-risk the critical path. Tools 1-3 are simpler and can slot in during Phase 2D (H+12 → H+16).
+- **Payer:** `4xHkMCaKVBGw4GtdpeKoNZhGFDMi1tMCJDvXvxUmL8hM` (has ~1.8 USDC remaining + 0.015 SOL)
+- **Merchant:** `Fxr4RtBPzU5ZJL2Wj57MZNuChBNbZzK3RHrXDwa1yqo` (has ~0.02 USDC from smoke test runs)
+- **First successful tx:** `KRjW2uK7LBioyyy1P3xcJTkpS2ibpCjBq1Ektnf4icL6GH25VnesoCGdQN7DbWYbbyjv9MxHoFrS3hsx7ZgkbEg`
 
 ---
 
-## What NOT to do in the next session
+## SDK workarounds discovered (critical for maintenance)
 
-- **Do NOT spawn more subagents** unless API 529 has clearly recovered. Default: direct Claude execution.
-- **Do NOT re-open the concept decision.** It is LOCKED at concept-lock-v2.md. Pivot only if Tool 4 fails all 4 plans.
-- **Do NOT read the brainstorm files** unless something is fundamentally broken. The brainstorm is archived reasoning.
-- **Do NOT add scope.** The 4-tool MCP server + the lobster.cash skill is the FULL scope. Do not add tools, do not add chains beyond Solana (+ stretch Base), do not add UI components.
-- **Do NOT name Ultravioleta, Execution Market, or MeshRelay** in any public file, code comment, README, blog post, or campaign proposal.
-- **Do NOT hardcode secrets or private keys** in any committed file.
-- **Do NOT write the blog post before the demo runs.** Per documentation-driven development, README first, but the blog post waits for screenshots of the real demo.
+1. **`createWallet` rejects free-form `owner` strings** — only `"COMPANY"` or prefixed locators (`email:x@y.com`, `userId:abc`, `x:handle`, `phoneNumber:+123`). Conditionally spread the owner field.
+2. **`getWallet` + `useSigner` crashes in SDK 1.0.7** — `WalletArgsFor` type omits `recovery` but the runtime `createWalletInstance` reads it. Workaround: pass `recovery: { type: "server", secret }` via a cast in the args. See `src/core/pay-x402-endpoint.ts` line ~110.
+3. **`createWallet` without owner/alias is NOT deterministic** — generates a new wallet each call. Always use an explicit `alias` for idempotent wallet resolution.
+4. **Crossmint gasless relayer charges ~0.001 USDC per `wallet.send`** — documented in README as expected fee.
 
 ---
 
-## Cut hierarchy if behind schedule
+## Immediate next actions (in priority order)
 
-1. Drop video recording (script exists, recording optional)
-2. Cut Twitter thread from 10 to 6 tweets
-3. Cut blog post from 1500 to 1000 words
-4. Drop Base EVM support (Solana only)
-5. Drop `crossmint_transfer_token` (Tool 3) — ship 3 tools instead of 4
-6. Drop `crossmint-cpi-skill` (Artifact 2) entirely — ship MCP server only
-7. **LAST RESORT:** Drop Tool 4 — ship "Crossmint wallets MCP server without x402" with v0.2 roadmap
+### 1. npm publish (~5 min)
+
+```bash
+# User must login first (interactive):
+npm login
+
+# Then publish:
+cd z:/crossmint-wallets-mcp
+pnpm publish --access public
+```
+
+Verify: `npm info crossmint-wallets-mcp` should show version 0.1.0.
+
+### 2. Phase 5 — Integration + submission README (~60-90 min)
+
+The `z:\crossmint-devrel-challenge\` repo will become the submission entry point. It needs:
+
+1. **A public-facing README.md** at the root that:
+   - Links to both artifact repos
+   - Summarizes what was built and why
+   - Links the blog post, thread, video script
+   - Shows the real mainnet tx signature as proof
+   - References the Solana Foundation guide "Crossmint is currently in progress"
+   
+2. **Move content drafts to final locations:**
+   - `_internal/content-drafts/02-blog-post.md` → `content/blog-post.md`
+   - `_internal/content-drafts/03-twitter-thread.md` → `content/twitter-thread.md`
+   - `_internal/content-drafts/04-video-script.md` → `content/video-script.md` (strip self-QA checklist lines 55-57 before committing to public)
+   - `_internal/content-drafts/05-campaign-proposal.md` → `campaign/proposal.md`
+   
+3. **Decide which `_internal/` files should be public vs private** in the submission:
+   - Phase notes, brainstorms, planning docs → stay in `_internal/` (private reasoning, not submission content)
+   - Decision log (`decisions.md`) → could be valuable to show the reviewer the build process, but contains internal meta-decisions. Your call.
+   - Content drafts → promoted to `content/` and `campaign/` directories
+
+### 3. Phase 6 — Public push (~30 min)
+
+1. **Create public GitHub repos** (or make existing private ones public):
+   - `github.com/0xultravioleta/crossmint-wallets-mcp`
+   - `github.com/0xultravioleta/crossmint-cpi-skill`
+   - `github.com/0xultravioleta/crossmint-devrel-challenge` (the submission repo)
+
+2. **Push all three repos:**
+   ```bash
+   cd z:/crossmint-wallets-mcp && git remote add origin https://github.com/0xultravioleta/crossmint-wallets-mcp.git && git push -u origin main
+   cd z:/crossmint-cpi-skill && git remote add origin https://github.com/0xultravioleta/crossmint-cpi-skill.git && git push -u origin main
+   cd z:/crossmint-devrel-challenge && git remote add origin https://github.com/0xultravioleta/crossmint-devrel-challenge.git && git push -u origin main
+   ```
+
+3. **Draft email to Adolfo** — the submission email. Short, links to repos, links to blog post, mentions the mainnet verification.
+
+### 4. Saul voice pass (~30 min)
+
+Read the 5 content files in `_internal/content-drafts/` aloud. Fix any sentences that don't sound like you on stream. This is mandatory per plan Phase 6 but can happen in parallel with integration work.
+
+### 5. Optional: Claude Desktop smoke test
+
+If Claude Desktop is installed:
+- Add the config block from the README to `%APPDATA%\Claude\claude_desktop_config.json`
+- Restart Claude Desktop
+- Prompt: "Create a Crossmint wallet on Solana"
+- Capture a screenshot for the blog post
 
 ---
 
-## Active TODO stack (next 28 hours)
+## What NOT to do
 
-| Hour | Activity | Owner |
+- **Do NOT re-run `pnpm demo` unless you specifically want to spend another ~0.01 USDC** on mainnet. The smoke test is already verified.
+- **Do NOT re-open the concept decision.** It is LOCKED.
+- **Do NOT modify files in `_internal/planning/plans/`** — they are reference only.
+- **Do NOT hardcode secrets in any committed file.**
+- **Do NOT commit `.env`, `wallet-cache.json`, or any file from `z:/consultoria-x/.unused/`.**
+- **Do NOT name Ultravioleta, Execution Market, or MeshRelay** in any public file.
+- **Do NOT add Claude co-author to commits.**
+
+---
+
+## Content artifacts — PM verdict + remaining gates
+
+| File | Words/Size | PM Verdict | Gate |
+|---|---|---|---|
+| 01-narrative-lock.md | 468 words | READY | Internal only |
+| 02-blog-post.md | 1310 words | READY | Saul voice pass |
+| 03-twitter-thread.md | 10 tweets ≤280 | READY (after tool-name fix) | Saul voice pass |
+| 04-video-script.md | 75s/871 words | READY | Strip QA checklist if going public |
+| 05-campaign-proposal.md | 496 words | READY (after Proof-it-works fix) | Saul voice pass |
+
+All PM fixes have been applied. Post-fix grep audit clean.
+
+---
+
+## Active TODO stack
+
+| Priority | Task | Est. time |
 |---|---|---|
-| H+7 → H+8 | Phase 2B scaffold review | Next session |
-| H+8 → H+12 | Phase 2C critical path Tool 4 | Next session |
-| H+12 → H+15 | Phase 2D Tools 1-3 | Next session |
-| H+15 → H+17 | Phase 2E MCP server wiring | Next session |
-| H+17 → H+19 | Phase 2F Claude Desktop smoke test | Next session |
-| H+19 → H+22 | Phase 2G lobster.cash skill | Next session |
-| H+22 → H+27 | Phase 3 content (blog + thread + video script) | Next session + Saul voice pass |
-| H+27 → H+29 | Phase 4 campaign 1-pager | Next session + Saul voice pass |
-| H+29 → H+33 | Phase 5 integration + reproduction test | Next session |
-| H+33 → H+34 | Phase 5 Saul voice pass + DA final review | Next session + Saul |
-| H+34 → H+35 | Phase 6 public GitHub push + npm publish | Next session + Saul |
-| H+35 → H+36 | Phase 6 email draft + send | Next session + Saul (sends) |
+| **P0** | `npm login` + `pnpm publish --access public` | 5 min |
+| **P0** | Phase 5: write submission README.md for `crossmint-devrel-challenge` | 30 min |
+| **P0** | Phase 5: promote content drafts to final dirs (`content/`, `campaign/`) | 15 min |
+| **P0** | Phase 6: create 3 public GitHub repos + push | 15 min |
+| **P0** | Phase 6: draft email to Adolfo | 15 min |
+| **P1** | Saul voice pass on 5 content files | 30 min |
+| **P2** | Claude Desktop smoke test + screenshot | 30 min |
+| **P2** | DM Fede about skill cert path | 5 min |
+| **P2** | Verify "13 certified skills" count on live lobster.cash/skills | 5 min |
 
----
-
-## Required from Saul for the next session
-
-1. **Crossmint server API key** with scopes: `wallets.create`, `wallets.read`, `wallets:transactions.create`, `wallets:transactions.sign`, `wallets:balance.read`
-2. **A "recovery secret" string** (any random 32+ character string, kept in `.env` only, never committed)
-3. **Devnet USDC** — 2 USDC on Solana Devnet for the test wallet (get via Circle faucet during Phase 2C Task 1.4)
-4. **GitHub `0xultravioleta` write access** — for creating public repos
-5. **npm publish permissions** — for `crossmint-wallets-mcp@0.1.0` publish during Phase 7
-6. **Claude Desktop installed** — for the Phase 2F smoke test
-
----
-
-## Files the next session must NOT touch without care
-
-- `_internal/phase-notes/concept-lock-v2.md` — LOCKED
-- `_internal/phase-notes/BUILD-PLAN.md` — reference, do not modify
-- `_internal/planning/plans/*.md` — reference, do not modify (they are the execution blueprints)
-- `_internal/decisions.md` — append-only log, add new entries at the bottom but do not rewrite history
+**Total estimated remaining: ~2.5 hours to ship-ready state.**
 
 ---
 
 ## The one sentence to remember
 
-> *"Crossmint ships the wallets. lobster.cash ships the CLI. I shipped the MCP bridge — and the skill the CLI is missing."*
-
-This is the locked narrative. Everything else serves it.
+> *"The MCP server builds, runs on mainnet, and has a verified on-chain tx. The content is drafted and PM-approved. All that's left is publish, push, and send."*
 
 ---
 
 ## Handoff complete
 
-- 5 plans written, 2,805 lines of planning documentation
-- 4 research files confirm the critical path
-- 17 commits in the coordination workspace
-- Partial scaffold in `z:\crossmint-wallets-mcp\` ready for Phase 2B review
-- Clean decision log
-- Ship target: H+36 (2026-04-10 18:30 EDT)
+- 6 commits in `crossmint-wallets-mcp` (functional MCP server with 4 tools verified end-to-end)
+- 2 commits in `crossmint-cpi-skill` (full educational content)
+- 22 commits in `crossmint-devrel-challenge` (coordination + content drafts)
+- Phases 2B, 2C, 2D, 2E, 2F (as far as possible), 2G, and 3 are DONE
+- Ship target: H+36 (2026-04-10 18:30 EDT) — ~8 hours from now, ~2.5h of work remaining
 
-**Next session starts with `pnpm install` on `z:\crossmint-wallets-mcp\` after reviewing `03-mcp-build-and-skill-plan.md` Phase 1. Total budget to ship: ~29 hours of wall clock time.**
-
-Good luck, next session. Ship clean.
+Good luck, next session. Publish, push, ship.
