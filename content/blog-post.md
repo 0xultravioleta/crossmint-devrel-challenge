@@ -86,9 +86,21 @@ If you are on a skill-architecture client (Claude Code, Cursor, OpenClaw), run t
 
 They are complementary, not competitors. Different clients, different install paths, same underlying Crossmint wallet. The MCP server handles the tool plumbing for MCP clients; the skill handles the knowledge layer for lobster.cash clients. Neither one replaces lobster.cash. Neither one replaces Crossmint. Both fork cleanly into the Crossmint org the moment the team decides they want to adopt them.
 
+## I already shipped the fix — in March
+
+This is not theoretical. On March 2, 2026, I shipped CPI inner instruction scanning to a production x402 facilitator — the first open-source facilitator with native smart wallet support on Solana. Two-path verification: scan top-level instructions first, fall back to CPI inner instructions for smart wallets. Supports Squads, Crossmint, SWIG, and any PDA-based wallet that routes transfers through CPI.
+
+The facilitator has been running in production since then, verified on Solana mainnet with a real Crossmint smart wallet payment: [`5eHpA5h1W9RNitzzyhkUWbRemXuLm6GbAANqt7HiWAwGPF1SftnJP5qLpY7t3zDTSPnkTjGAtkth497AiCEBjAR`](https://solscan.io/tx/5eHpA5h1W9RNitzzyhkUWbRemXuLm6GbAANqt7HiWAwGPF1SftnJP5qLpY7t3zDTSPnkTjGAtkth497AiCEBjAR).
+
+The MCP server and the skill are the developer-facing pieces. The facilitator fix is the infrastructure piece that makes smart wallet x402 payments actually land.
+
 ## What's next
 
-Both artifacts are MIT-licensed on my personal GitHub, and both are drafted to be republished at `@crossmint/wallets-mcp` and as a `crossmint/skills` entry the moment the team wants them. The MCP server is ready for the [modelcontextprotocol.io/registry](https://modelcontextprotocol.io/registry) submission. The skill is ready for Fede's certification review into [lobster.cash/skills](https://lobster.cash/skills). If there is a path forward, the next conversation is about shipping it as `@crossmint/*` and updating the Solana Foundation's "Crossmint is currently in progress" note on their x402 guide to "shipped."
+Both artifacts are MIT-licensed on my personal GitHub, and both are drafted to be republished at `@crossmint/wallets-mcp` and as a `crossmint/skills` entry the moment the team wants them. The MCP server is ready for the [modelcontextprotocol.io/registry](https://modelcontextprotocol.io/registry) submission. The skill is ready for Fede's certification review into [lobster.cash/skills](https://lobster.cash/skills).
+
+The CPI scanning logic is implemented in Rust and has been running in production for over a month. The Faremeter SDK (which lobster.cash uses internally for x402 payments) does not yet have this capability — it only scans top-level instructions. Porting the fix to TypeScript and contributing it upstream would close the gap for every Faremeter-based facilitator, not just mine.
+
+If there is a path forward, the next conversation is about shipping it as `@crossmint/*` and updating the Solana Foundation's "Crossmint is currently in progress" note on their x402 guide to "shipped."
 
 DMs open.
 
