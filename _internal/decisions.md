@@ -296,3 +296,96 @@ After two successful 0.01 USDC payments, the payer balance dropped from 2.0 to 1
 - Earlier in Phase 2B: `dotenv ^16.4.5`, `rimraf ^5.0.5`
 
 **Phase 2C gate: PASSED at H+8.** Tool 4 shipped 2.5 hours ahead of the Plan A deadline. Proceeding to Phase 2D (Tools 1-3 remaining) and Phase 2E (MCP wiring) — we already have createWallet + getBalance complete, just need transferToken and MCP tool registration.
+
+---
+
+## 2026-04-09 H+8.5: Phase 2D + 2E complete — MCP server end-to-end
+
+Delivered in a single push at H+8.5:
+
+- **Phase 2D Task 5.1 (transferToken)** — general-purpose wrapper around `wallet.send()` using the same `getWallet + recovery cast` pattern as `pay-x402-endpoint.ts`. Dropped the plan's email-based signature in favor of `payerAddress`, consistent with the rest of the core layer.
+- **Phase 2E (MCP wiring)** — all 4 tools registered via `McpServer.registerTool` (the 1.29 canonical API; `tool(...)` overloads are deprecated). Each tool has: title, verbose description that names the real gotchas (owner locator format, alias determinism, fee expectations), zod inputSchema with per-field descriptions for agent discoverability.
+- **Error handling** — handlers catch thrown errors, route them through `classifyError + toolErrorResponse` so clients see structured error codes (`CONFIG_MISSING`, `WALLET_NOT_FOUND`, `INSUFFICIENT_BALANCE`, `X402_CHALLENGE_FAILED`, `NETWORK_ERROR`, `SDK_ERROR`, etc) instead of raw stack traces.
+- **`maxUsdcAtomic`** comes in as a zod integer (JSON-safe, max safe 2^53-1) and is converted to `bigint` at the core boundary.
+
+**Verified end-to-end via stdin JSON-RPC pipe against `dist/mcp/server.js`:**
+1. `initialize` → protocolVersion `2025-06-18`, 4 tools, `listChanged: true` OK
+2. `notifications/initialized` → handled
+3. `tools/call crossmint_get_balance { address: "4xHk...", chain: "solana" }` → returned real on-chain balances: 0.015 native SOL + 1.807663 USDC
+
+**Fee anomaly partially solved**: Crossmint charges ~0.001 USDC per `wallet.send` operation as the gasless relayer fee. Documented in the MCP server README.
+
+**Phase 2E gate: PASSED at H+8.5.** `dist/mcp/server.js` exists, responds correctly to `initialize` + `tools/list` + `tools/call`. Ready for Phase 2F (npm publish + Claude Desktop smoke test — user-dependent steps).
+
+---
+
+## 2026-04-09 H+9: Phase 2F + 2G as far as possible
+
+**Phase 2F (publish-ready, Claude Desktop prep):**
+- README.md written for crossmint-wallets-mcp (303 lines) with install instructions, config blocks for 4 MCP clients (Claude Desktop, Continue.dev, Cline, Codex CLI), real smoke test output anchored to tx `KRjW2uK7LBioy...icL6GH25VnesoCGdQN7DbWYbbyjv9MxHoFrS3hsx7ZgkbEg`, env var reference, fee notes, companion-skill cross-link.
+- `pnpm publish --dry-run` verified: 22.9kB tarball, 43 files, includes dist/ + README + LICENSE, excludes src/ + demo/ + .env + lockfile. Package name `crossmint-wallets-mcp` is unclaimed on npm (404 at registry.npmjs.org).
+- What remains for Phase 2F is operator-dependent: `pnpm publish --access public`, install Claude Desktop, add config, restart, invoke tools from Claude's chat input. Cannot be executed without the operator's npm login + Claude Desktop install.
+
+**Phase 2G (skill content):**
+- SKILL.md rewritten (242 lines added) with the full CPI teaching content: plain-english corporate-treasury analogy, wrong-way code example with the common errors, right-way `wallet.send()` recipe, x402 payment loop recipe, facilitator verification guidance using `postTokenBalances` delta scan, quick decision tree for agents, common errors table mapping SDK 1.0.7 error messages to root causes.
+- Cross-links `crossmint-wallets-mcp` as the reference implementation.
+- README.md already covered the framing (kept from scaffold).
+
+**Phase 2F + 2G gate: PASSED at H+9** (modulo the operator-dependent publish + install steps for 2F).
+
+---
+
+## 2026-04-09 H+9: Phase 3 content — HR-coordinated specialist team launched
+
+Per operator direction, Phase 3 content work is being delegated to a specialist team coordinated by an HR agent and reviewed by a soulless PM agent. Structure:
+
+- **HR agent** (running in background since H+9): reads project context, writes a shared brief at `_internal/content-drafts/00-shared-brief.md`, spawns 4 specialists in parallel:
+  - marketing-strategist: narrative + title lock + campaign 1-pager
+  - blog-writer: 1300-1500 word blog post
+  - thread-writer: 8-10 tweet Twitter thread
+  - video-script-writer: 60-90s shot list
+  - Waits for all 4, returns consolidated hiring + delivery report
+- **PM agent** (to be spawned after HR returns): reads all 4 drafts + HR report, cross-checks for consistency against the banned-words list + framing discipline + mandatory inclusions, produces a final consolidated plan WITHOUT rewriting any content.
+- Working directory for drafts: `_internal/content-drafts/` (intentionally out of the public repos until integration)
+- Progress as of H+9: shared-brief + 01-narrative-lock + 02-blog-post + 03-twitter-thread already exist; 04-video-script + 05-campaign-proposal in flight
+
+This structure mirrors the PM/HR separation the operator specified: HR hires, PM coordinates, specialists execute, consolidated plan returned at the end.
+
+---
+
+## 2026-04-09 H+10: Phase 3 content closeout — PM plan returned + fixes applied
+
+**HR delivered** all 5 content drafts in ~20 min of sequential writing passes (Task tool was NOT available in the subagent environment; HR adapted by running each specialist as a sequential single-purpose pass with the same briefs and constraints). Shared brief + 01-narrative-lock + 02-blog-post + 03-twitter-thread + 04-video-script + 05-campaign-proposal all landed in `_internal/content-drafts/`.
+
+**PM (soulless) cross-reviewed** everything independently and returned a GO WITH FIXES verdict. Critical catches that HR missed:
+
+1. **Twitter thread Tweet 3 paraphrased 3 of 4 tool names.** Shared brief rule was "EXACT names, do not paraphrase". PM caught it via independent grep, HR's QA pass didn't.
+2. **Campaign proposal was missing 4+ mandatory inclusions.** HR's QA focused on word count and handle-naming; it did not audit the campaign against the shared-brief "blog post AND campaign proposal must include all of the below" list. The campaign had no tool names, no tx signature, no CPI analogy, and no Faremeter mention. This is the strongest single piece of proof we have and it was absent from the pitch document.
+3. **Video end card had no JSON config block reference.** Minor.
+
+PM resolved HR's 6 open questions (keep `0xultravioleta` handle, keep video at 75s, soften Tweet 10 CTA by dropping public lobster.cash tag, accept campaign under 500, keep narrative-lock rationale, keep video self-QA checklist for internal files), flagged HR misses, and recommended 5 mechanical fixes totaling ~30-40 minutes.
+
+**Fixes applied directly** (2026-04-09 H+10):
+
+- `03-twitter-thread.md`: Split former Tweet 3 into Tweet 3a (framing + 4 verbatim tool names) + Tweet 3b (install block). Thread is now 10 tweets instead of 9 — still inside 8-10 target. Verified all Twitter char counts under 280 (accounting for Twitter's 23-char URL collapse). Also softened the CTA in what is now Tweet 10 by dropping the public lobster.cash mention — Fede hasn't reviewed the skill yet, so don't publicly ping his team before the certification path is confirmed privately.
+- `05-campaign-proposal.md`: Added a 3-sentence "Proof it works" section between "Why this campaign" and "What needs to happen" containing all 4 verbatim tool names, the tx signature with explorer link, the CPI analogy in one sentence, and the Faremeter reference. Trimmed the "60-day strategic outcomes" by ~20 words to stay under the 500-word ceiling. Final clean word count: 496.
+- `04-video-script.md`: Added a "Claude Desktop / Cursor / Cline / Codex config block in README" line to the end card and the matching voiceover change. End card now has 6 lines instead of 5.
+
+**Post-fix grep audit results:**
+
+| File | Words | Banned | Ultravioleta | Tool names | URLs | Tx sig | lobster-cli |
+|---|---|---|---|---|---|---|---|
+| 01-narrative-lock | 468 | clean | URL-only | n/a | n/a | n/a | n/a |
+| 02-blog-post | 1310 | clean | URL-only | 4/4 | 3/3 | present | present |
+| 03-twitter-thread | 10 tweets, all ≤280 | clean | URL-only | 4/4 | 2/3 (Solana URL acceptable per PM) | present | present |
+| 04-video-script | 871 | negative-assertion false positives only | URL-only | 3/4 (video scope) | n/a | present | n/a |
+| 05-campaign-proposal | 496 | clean | URL-only | 4/4 | 3/3 | present | present |
+
+**Phase 3 status: READY FOR SAUL VOICE PASS.** All 5 files technically correct, framing-clean, mandatory-inclusion-compliant, and narratively consistent. The Saul voice pass (plan Phase 6, ~30 min) is the remaining gate before publish.
+
+**Open items for ship:**
+- [ ] Saul voice pass on all 5 files (mandatory)
+- [ ] Before promoting `04-video-script.md` to any public repo: strip the self-QA compliance checklist at lines 55-57 (contains banned words as negative assertions, trips naive grep)
+- [ ] DM Fede privately about the skill cert path BEFORE the Twitter thread goes live (so the soft CTA in Tweet 10 doesn't leave him blindsided)
+- [ ] Cross-check the "13 certified skills" count against live `lobster.cash/skills` directory before publishing anything
+- [ ] Phase 2F user-dependent steps: `pnpm publish --access public`, install Claude Desktop, add config, invoke tools from Claude's chat
