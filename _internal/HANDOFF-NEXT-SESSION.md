@@ -81,9 +81,8 @@ Read these in order:
 
 ### Secrets location
 
-- API key: `z:/consultoria-x/.unused/crossmint-api-key-0xultravioleta.txt` (230 bytes)
-- Recovery secret: `z:/consultoria-x/.unused/crossmint-recovery-secret-0xultravioleta.txt` (64 bytes, hex-encoded 32 bytes entropy)
-- **NEVER** print, cat, or display these files — user is always streaming
+- API key and recovery secret stored locally (paths redacted for public repo)
+- **NEVER** print, cat, or display secret files
 
 ### Wallet addresses (Solana mainnet)
 

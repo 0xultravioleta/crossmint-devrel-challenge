@@ -91,8 +91,6 @@ The full process is documented in [`_internal/`](_internal/):
 
 | File | What it shows |
 |---|---|
-| [`MASTERPLAN.md`](MASTERPLAN.md) | Phase-by-phase execution plan |
-| [`TEAM.md`](TEAM.md) | Multi-agent team architecture |
 | [`_internal/decisions.md`](_internal/decisions.md) | Running decision log with timestamps |
 | [`_internal/hr-proposal.md`](_internal/hr-proposal.md) | HR's team composition rationale |
 | [`_internal/pm-journal.md`](_internal/pm-journal.md) | PM's coordination journal |
