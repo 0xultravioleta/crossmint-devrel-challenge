@@ -24,7 +24,7 @@ The MCP server ships 4 tools: `crossmint_create_wallet`, `crossmint_get_balance`
 
 - Review `github.com/0xultravioleta/crossmint-cpi-skill` for certification
 - If certified, add to the [lobster.cash/skills](https://lobster.cash/skills) directory
-- The CPI inner instruction scanning fix has already been implemented and battle-tested in a production facilitator since March 2, 2026. The Faremeter SDK (which lobster.cash uses internally for x402 payments) needs the same fix — it currently only scans top-level instructions. A contribution to port this fix upstream is in progress.
+- The CPI inner instruction scanning fix has already been implemented and battle-tested in a production facilitator since March 2, 2026. The Faremeter SDK focuses on top-level instruction scanning today — extending it to also scan CPI inner instructions would benefit every Faremeter-based facilitator in the ecosystem.
 
 **For DevRel distribution:**
 
