@@ -98,7 +98,7 @@ Plain English: it's the difference between writing a check yourself and your ban
 
 Naive facilitators scan only top-level instructions. They miss the CPI transfer and reject the payment even though USDC moved.
 
-Faremeter scans inner instructions and gets it right. So I wrote the lobster.cash skill that teaches agents this:
+Corbits scans inner instructions and gets it right. So I wrote the lobster.cash skill that teaches agents this:
 
 `npx skills add crossmint-cpi-skill`
 
@@ -125,7 +125,7 @@ Skills: lobster.cash/skills
 Credit where it's due:
 - Crossmint shipped the wallets
 - lobster.cash shipped the CLI
-- Faremeter handles the CPI on the facilitator side
+- Corbits handles the CPI on the facilitator side
 
 I built the MCP bridge and the skill that explains the quirk.
 

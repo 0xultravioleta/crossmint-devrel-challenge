@@ -68,7 +68,7 @@ A normal Solana transfer has a top-level SPL `TransferChecked` instruction. The 
 
 Plain English analogy: it is the difference between writing a check yourself and your bank writing it on your behalf. The money moves either way, but different signatures show up on the receipt.
 
-This matters because naive x402 facilitators only scan top-level instructions. They see an opaque "smart wallet program" call, cannot find an SPL transfer that matches the 402 requirements, and reject the payment as invalid — even though the USDC has already moved. Facilitators that correctly scan CPI inner instructions — Faremeter is the one Crossmint itself uses and recommends — find the nested transfer and verify it without a problem.
+This matters because naive x402 facilitators only scan top-level instructions. They see an opaque "smart wallet program" call, cannot find an SPL transfer that matches the 402 requirements, and reject the payment as invalid — even though the USDC has already moved. Facilitators that correctly scan CPI inner instructions — [Corbits](https://www.corbits.dev) is the one confirmed working with Crossmint smart wallets on Solana — find the nested transfer and verify it without a problem.
 
 The skill I wrote, `crossmint-cpi-skill`, is a lobster.cash-compatible skill that teaches agents this exact decision tree. It follows the Skill Compatibility Guide — `SKILL.md` with a wallet precheck, a payment action description, and payment-status error handling — and it shells out to `@crossmint/lobster-cli@3.0.8` for execution so it is never reimplementing payment logic. It is MIT and installable via the lobster.cash skill directory path:
 
